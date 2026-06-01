@@ -223,6 +223,7 @@ function getPaymentContact(session: OfferSession | null) {
   const firstName = session?.answers.first_name?.trim() ?? "";
   const lastName = session?.answers.last_name?.trim() ?? "";
   const fullName = [firstName, lastName].filter(Boolean).join(" ");
+  const city = session?.answers.city === "Other" ? session.answers.custom_city : session?.answers.city;
 
   return {
     first_name: firstName,
@@ -230,7 +231,15 @@ function getPaymentContact(session: OfferSession | null) {
     name: fullName || "AI Growth Studio Learner",
     email: session?.answers.email?.trim() ?? "",
     phone: session?.answers.whatsapp_number?.trim() ?? "",
-    whatsapp_number: session?.answers.whatsapp_number?.trim() ?? ""
+    whatsapp_number: session?.answers.whatsapp_number?.trim() ?? "",
+    resume_score: session?.scoreResult?.resume_visibility_score,
+    which_city: city,
+    why_do_you_want_to_change: session?.answers.reason_for_change,
+    utm_campaign: session?.utm?.utm_campaign,
+    utm_source: session?.utm?.utm_source,
+    utm_term: session?.utm?.utm_term,
+    medium: session?.utm?.utm_medium,
+    content: session?.utm?.utm_content
   };
 }
 
@@ -256,7 +265,10 @@ function buildPaymentWebhookPayload(
       ...extra
     },
     survey: session?.answers ?? {},
-    question_answers: buildReadableSurveyAnswers(session?.answers ?? {}),
+    question_answers: {
+      resume_score: session?.scoreResult?.resume_visibility_score,
+      ...buildReadableSurveyAnswers(session?.answers ?? {})
+    },
     questions: buildReadableQuestionList(session?.answers ?? {}),
     score: session?.scoreResult
       ? {

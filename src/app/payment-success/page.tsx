@@ -34,6 +34,7 @@ export default function PaymentSuccessPage() {
     const lastName = answers.last_name?.trim() ?? "";
     const name = [firstName, lastName].filter(Boolean).join(" ");
     const utm = stored.utm ?? {};
+    const city = answers.city === "Other" ? answers.custom_city : answers.city;
 
     const payload = {
       source: "AI Growth Studio Interview Accelerator Payment",
@@ -45,7 +46,15 @@ export default function PaymentSuccessPage() {
         name,
         email: answers.email,
         phone: answers.whatsapp_number,
-        whatsapp_number: answers.whatsapp_number
+        whatsapp_number: answers.whatsapp_number,
+        resume_score: stored.scoreResult?.resume_visibility_score,
+        which_city: city,
+        why_do_you_want_to_change: answers.reason_for_change,
+        utm_campaign: utm.utm_campaign,
+        utm_source: utm.utm_source,
+        utm_term: utm.utm_term,
+        medium: utm.utm_medium,
+        content: utm.utm_content
       },
       payment: {
         provider: "razorpay",
@@ -58,7 +67,10 @@ export default function PaymentSuccessPage() {
         currency: "INR"
       },
       survey: answers,
-      question_answers: buildReadableSurveyAnswers(answers),
+      question_answers: {
+        resume_score: stored.scoreResult?.resume_visibility_score,
+        ...buildReadableSurveyAnswers(answers)
+      },
       questions: buildReadableQuestionList(answers),
       score: stored.scoreResult
         ? {

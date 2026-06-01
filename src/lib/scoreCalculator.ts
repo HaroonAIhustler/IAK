@@ -222,6 +222,7 @@ export function buildWebhookPayload(
   const firstName = answers.first_name?.trim() ?? "";
   const lastName = answers.last_name?.trim() ?? "";
   const name = [firstName, lastName].filter(Boolean).join(" ");
+  const city = answers.city === "Other" ? answers.custom_city : answers.city;
 
   return {
     source: "AI Growth Studio Resume Visibility Score Survey",
@@ -231,10 +232,21 @@ export function buildWebhookPayload(
       name,
       email: answers.email,
       phone: answers.whatsapp_number,
-      whatsapp_number: answers.whatsapp_number
+      whatsapp_number: answers.whatsapp_number,
+      resume_score: scoreResult.resume_visibility_score,
+      which_city: city,
+      why_do_you_want_to_change: answers.reason_for_change,
+      utm_campaign: utm.utm_campaign,
+      utm_source: utm.utm_source,
+      utm_term: utm.utm_term,
+      medium: utm.utm_medium,
+      content: utm.utm_content
     },
     survey: answers,
-    question_answers: buildReadableSurveyAnswers(answers),
+    question_answers: {
+      resume_score: scoreResult.resume_visibility_score,
+      ...buildReadableSurveyAnswers(answers)
+    },
     questions: buildReadableQuestionList(answers),
     score: {
       resume_visibility_score: scoreResult.resume_visibility_score,
