@@ -4,7 +4,12 @@ import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "AI Growth Studio - Resume Visibility Score",
-  description: "Resume Visibility Check by AI Growth Studio"
+  description: "Resume Visibility Check by AI Growth Studio",
+  icons: {
+    icon: "https://assets.cdn.filesafe.space/S3oYl74Av60NEQIC13cQ/media/69a059580fd1132b8a1e7c36.png",
+    shortcut: "https://assets.cdn.filesafe.space/S3oYl74Av60NEQIC13cQ/media/69a059580fd1132b8a1e7c36.png",
+    apple: "https://assets.cdn.filesafe.space/S3oYl74Av60NEQIC13cQ/media/69a059580fd1132b8a1e7c36.png"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
