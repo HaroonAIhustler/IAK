@@ -16,6 +16,11 @@ function readPaymentParams() {
   return new URLSearchParams(window.location.search);
 }
 
+function webhookString(value: unknown) {
+  if (value === undefined || value === null) return "";
+  return String(value);
+}
+
 export default function PaymentSuccessPage() {
   const trackedRef = useRef(false);
 
@@ -47,16 +52,32 @@ export default function PaymentSuccessPage() {
         email: answers.email,
         phone: answers.whatsapp_number,
         whatsapp_number: answers.whatsapp_number,
-        resume_score: stored.scoreResult?.resume_visibility_score,
-        which_city: city,
-        why_do_you_want_to_change: answers.reason_for_change,
-        utm_campaign: utm.utm_campaign,
-        utm_source: utm.utm_source,
-        utm_term: utm.utm_term,
-        medium: utm.utm_medium,
-        content: utm.utm_content
+        resume_score: webhookString(stored.scoreResult?.resume_visibility_score),
+        which_city: webhookString(city),
+        why_do_you_want_to_change: webhookString(answers.reason_for_change),
+        utm_campaign: webhookString(utm.utm_campaign),
+        utm_source: webhookString(utm.utm_source),
+        utm_term: webhookString(utm.utm_term),
+        medium: webhookString(utm.utm_medium),
+        content: webhookString(utm.utm_content)
       },
-      payment: {
+      questions: {
+        resume_score: stored.scoreResult?.resume_visibility_score,
+        score_label: stored.scoreResult?.score_label,
+        ...buildReadableSurveyAnswers(answers),
+        list: buildReadableQuestionList(answers)
+      },
+      utm: {
+        campaign: utm.utm_campaign,
+        source: utm.utm_source,
+        term: utm.utm_term,
+        medium: utm.utm_medium,
+        content: utm.utm_content,
+        platform: utm.platform,
+        landing_page_url: utm.landing_page_url
+      },
+      payments: {
+        status: "payment_success",
         provider: "razorpay",
         payment_button_id: razorpayPaymentButtonId,
         payment_id: paymentId,
@@ -64,23 +85,9 @@ export default function PaymentSuccessPage() {
         callback_params: Object.fromEntries(params.entries()),
         product: routing.razorpay_product,
         amount: routing.offer_price,
-        currency: "INR"
-      },
-      survey: answers,
-      question_answers: {
-        resume_score: stored.scoreResult?.resume_visibility_score,
-        ...buildReadableSurveyAnswers(answers)
-      },
-      questions: buildReadableQuestionList(answers),
-      score: stored.scoreResult
-        ? {
-            resume_visibility_score: stored.scoreResult.resume_visibility_score,
-            score_label: stored.scoreResult.score_label
-          }
-        : null,
-      routing,
-      utm,
-      submitted_at: new Date().toISOString()
+        currency: "INR",
+        submitted_at: new Date().toISOString()
+      }
     };
 
     trackPageView("payment_success", {

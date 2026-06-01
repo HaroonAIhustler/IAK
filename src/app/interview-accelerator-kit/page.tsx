@@ -219,6 +219,11 @@ function getSafeQueryPayload(session: OfferSession | null) {
   };
 }
 
+function webhookString(value: unknown) {
+  if (value === undefined || value === null) return "";
+  return String(value);
+}
+
 function getPaymentContact(session: OfferSession | null) {
   const firstName = session?.answers.first_name?.trim() ?? "";
   const lastName = session?.answers.last_name?.trim() ?? "";
@@ -232,14 +237,14 @@ function getPaymentContact(session: OfferSession | null) {
     email: session?.answers.email?.trim() ?? "",
     phone: session?.answers.whatsapp_number?.trim() ?? "",
     whatsapp_number: session?.answers.whatsapp_number?.trim() ?? "",
-    resume_score: session?.scoreResult?.resume_visibility_score,
-    which_city: city,
-    why_do_you_want_to_change: session?.answers.reason_for_change,
-    utm_campaign: session?.utm?.utm_campaign,
-    utm_source: session?.utm?.utm_source,
-    utm_term: session?.utm?.utm_term,
-    medium: session?.utm?.utm_medium,
-    content: session?.utm?.utm_content
+    resume_score: webhookString(session?.scoreResult?.resume_visibility_score),
+    which_city: webhookString(city),
+    why_do_you_want_to_change: webhookString(session?.answers.reason_for_change),
+    utm_campaign: webhookString(session?.utm?.utm_campaign),
+    utm_source: webhookString(session?.utm?.utm_source),
+    utm_term: webhookString(session?.utm?.utm_term),
+    medium: webhookString(session?.utm?.utm_medium),
+    content: webhookString(session?.utm?.utm_content)
   };
 }
 
@@ -256,29 +261,31 @@ function buildPaymentWebhookPayload(
     event_type: "payment_event",
     payment_status: paymentStatus,
     contact,
-    payment: {
+    questions: {
+      resume_score: session?.scoreResult?.resume_visibility_score,
+      score_label: session?.scoreResult?.score_label,
+      ...buildReadableSurveyAnswers(session?.answers ?? {}),
+      list: buildReadableQuestionList(session?.answers ?? {})
+    },
+    utm: {
+      campaign: session?.utm?.utm_campaign,
+      source: session?.utm?.utm_source,
+      term: session?.utm?.utm_term,
+      medium: session?.utm?.utm_medium,
+      content: session?.utm?.utm_content,
+      platform: session?.utm?.platform,
+      landing_page_url: session?.utm?.landing_page_url
+    },
+    payments: {
+      status: paymentStatus,
       provider: "razorpay",
       payment_button_id: razorpayPaymentButtonId,
       product: routing.razorpay_product,
       amount: routing.offer_price,
       currency: "INR",
+      submitted_at: new Date().toISOString(),
       ...extra
-    },
-    survey: session?.answers ?? {},
-    question_answers: {
-      resume_score: session?.scoreResult?.resume_visibility_score,
-      ...buildReadableSurveyAnswers(session?.answers ?? {})
-    },
-    questions: buildReadableQuestionList(session?.answers ?? {}),
-    score: session?.scoreResult
-      ? {
-          resume_visibility_score: session.scoreResult.resume_visibility_score,
-          score_label: session.scoreResult.score_label
-        }
-      : null,
-    routing,
-    utm: session?.utm ?? {},
-    submitted_at: new Date().toISOString()
+    }
   };
 }
 

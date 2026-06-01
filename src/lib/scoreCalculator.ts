@@ -10,6 +10,11 @@ function slugify(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 }
 
+function webhookString(value: unknown) {
+  if (value === undefined || value === null) return "";
+  return String(value);
+}
+
 const repliesBaseScore: Record<string, number> = {
   "0 replies": 20,
   "1-2 replies total": 35,
@@ -233,29 +238,37 @@ export function buildWebhookPayload(
       email: answers.email,
       phone: answers.whatsapp_number,
       whatsapp_number: answers.whatsapp_number,
+      resume_score: webhookString(scoreResult.resume_visibility_score),
+      which_city: webhookString(city),
+      why_do_you_want_to_change: webhookString(answers.reason_for_change),
+      utm_campaign: webhookString(utm.utm_campaign),
+      utm_source: webhookString(utm.utm_source),
+      utm_term: webhookString(utm.utm_term),
+      medium: webhookString(utm.utm_medium),
+      content: webhookString(utm.utm_content)
+    },
+    questions: {
       resume_score: scoreResult.resume_visibility_score,
-      which_city: city,
-      why_do_you_want_to_change: answers.reason_for_change,
-      utm_campaign: utm.utm_campaign,
-      utm_source: utm.utm_source,
-      utm_term: utm.utm_term,
+      score_label: scoreResult.score_label,
+      ...buildReadableSurveyAnswers(answers),
+      list: buildReadableQuestionList(answers)
+    },
+    utm: {
+      campaign: utm.utm_campaign,
+      source: utm.utm_source,
+      term: utm.utm_term,
       medium: utm.utm_medium,
-      content: utm.utm_content
+      content: utm.utm_content,
+      platform: utm.platform,
+      landing_page_url: utm.landing_page_url
     },
-    survey: answers,
-    question_answers: {
-      resume_score: scoreResult.resume_visibility_score,
-      ...buildReadableSurveyAnswers(answers)
-    },
-    questions: buildReadableQuestionList(answers),
-    score: {
-      resume_visibility_score: scoreResult.resume_visibility_score,
-      score_label: scoreResult.score_label
-    },
-    routing,
-    utm,
-    tags,
-    result_page_url: "/resume-score-result",
-    submitted_at: new Date().toISOString()
+    payments: {
+      offer_segment: routing.offer_segment,
+      offer_price: routing.offer_price,
+      razorpay_product: routing.razorpay_product,
+      result_page_url: "/resume-score-result",
+      tags,
+      submitted_at: new Date().toISOString()
+    }
   };
 }
