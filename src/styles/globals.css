@@ -439,6 +439,31 @@ button {
   line-height: 1.5;
 }
 
+.unsupported-field-slide {
+  align-content: start;
+}
+
+.unsupported-field-slide__icon {
+  color: #16a34a;
+}
+
+.unsupported-field-slide__selection {
+  width: fit-content;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(25, 70, 156, 0.08);
+  color: var(--primary);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.unsupported-field-slide__form {
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+}
+
 .select-field,
 .search-field,
 .text-field {

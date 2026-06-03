@@ -10,6 +10,7 @@ import { LogoHeader } from "@/components/LogoHeader";
 import { OptionCardList } from "@/components/OptionCardList";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SearchableCitySelect } from "@/components/SearchableCitySelect";
+import { UnsupportedFieldSlide } from "@/components/UnsupportedFieldSlide";
 import { getVisibleQuestions, surveyQuestions } from "@/data/surveyQuestions";
 import { sendSurveyWebhook } from "@/lib/ghlWebhook";
 import { trackDataLayerEvent, trackLeadEvent, trackPageView } from "@/lib/analytics";
@@ -21,6 +22,7 @@ import { validateContact } from "@/lib/validation";
 import type { SurveyAnswers } from "@/lib/types";
 
 const initialAnswers: SurveyAnswers = {};
+const unsupportedTargetFields = new Set(["Civil service or public service", "Government office"]);
 
 export default function ResumeScorePage() {
   const router = useRouter();
@@ -29,6 +31,11 @@ export default function ResumeScorePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [started, setStarted] = useState(false);
+  const [unsupportedMode, setUnsupportedMode] = useState(false);
+  const [unsupportedCollecting, setUnsupportedCollecting] = useState(false);
+  const [unsupportedSubmitted, setUnsupportedSubmitted] = useState(false);
+  const [unsupportedContact, setUnsupportedContact] = useState({ name: "", email: "" });
+  const [unsupportedError, setUnsupportedError] = useState("");
 
   const visibleQuestions = useMemo(() => getVisibleQuestions(answers), [answers]);
   const currentQuestion = visibleQuestions[stepIndex];
@@ -61,6 +68,13 @@ export default function ResumeScorePage() {
 
       if (key === "city") {
         next.custom_city = "";
+      }
+
+      if (key === "target_field" && unsupportedTargetFields.has(value)) {
+        setUnsupportedMode(true);
+        setUnsupportedCollecting(false);
+        setUnsupportedSubmitted(false);
+        setUnsupportedError("");
       }
 
       return next;
@@ -146,6 +160,61 @@ export default function ResumeScorePage() {
     }, loadingDelay);
   }
 
+  async function submitUnsupportedContact() {
+    const name = unsupportedContact.name.trim();
+    const email = unsupportedContact.email.trim().toLowerCase();
+
+    if (!name || !email) {
+      setUnsupportedError("Please enter your name and email.");
+      return;
+    }
+
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+      setUnsupportedError("Please enter a valid email address.");
+      return;
+    }
+
+    setUnsupportedError("");
+    const utm = captureUtm();
+    const payload = {
+      source: "AI Growth Studio Unsupported Field Waitlist",
+      event_type: "unsupported_field_waitlist",
+      contact: {
+        first_name: name,
+        name,
+        email,
+        target_field: answers.target_field ?? "",
+        utm_campaign: utm.utm_campaign ?? "",
+        utm_source: utm.utm_source ?? "",
+        utm_term: utm.utm_term ?? "",
+        medium: utm.utm_medium ?? "",
+        content: utm.utm_content ?? ""
+      },
+      questions: {
+        what_best_describes_you: answers.user_segment,
+        which_field_do_you_want_to_work_in: answers.target_field
+      },
+      utm: {
+        campaign: utm.utm_campaign,
+        source: utm.utm_source,
+        term: utm.utm_term,
+        medium: utm.utm_medium,
+        content: utm.utm_content,
+        platform: utm.platform,
+        landing_page_url: utm.landing_page_url
+      },
+      payments: {
+        status: "not_applicable",
+        reason: "unsupported_target_field",
+        submitted_at: new Date().toISOString()
+      }
+    };
+
+    trackDataLayerEvent("unsupported_field_waitlist_submitted", payload);
+    await sendSurveyWebhook(payload);
+    setUnsupportedSubmitted(true);
+  }
+
   return (
     <main className="survey-page survey-page--funnel">
       <section className="survey-shell" aria-label="Resume Visibility Score Survey">
@@ -172,7 +241,7 @@ export default function ResumeScorePage() {
             <ProgressBar value={progress} />
 
             <div className="survey-card__topline">
-              {stepIndex > 0 ? (
+              {stepIndex > 0 && !unsupportedMode ? (
                 <button className="icon-button" type="button" onClick={goBack} aria-label="Go back">
                   <ArrowLeft size={19} />
                 </button>
@@ -187,7 +256,18 @@ export default function ResumeScorePage() {
               </span>
             </div>
 
-            {isContactStep ? (
+            {unsupportedMode ? (
+              <UnsupportedFieldSlide
+                contact={unsupportedContact}
+                error={unsupportedError}
+                isCollecting={unsupportedCollecting}
+                isSubmitted={unsupportedSubmitted}
+                selectedField={answers.target_field}
+                onStartContact={() => setUnsupportedCollecting(true)}
+                onChange={(key, value) => setUnsupportedContact((current) => ({ ...current, [key]: value }))}
+                onSubmit={submitUnsupportedContact}
+              />
+            ) : isContactStep ? (
               <ContactSlide answers={answers} error={formError} onChange={updateAnswer} onSubmit={submitSurvey} />
             ) : currentQuestion?.type === "city" ? (
               <div className="question-slide">
