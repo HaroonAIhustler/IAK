@@ -13,7 +13,8 @@ export const userSegmentOptions = [
   "Fresher, not started applying seriously yet",
   "Fresher, already applying but no replies",
   "0-2 of years experience",
-  "2-5 of years experience"
+  "2-5 of years experience",
+  "5+ years of experience"
 ];
 
 export function isFresher(segment?: string) {
@@ -21,7 +22,7 @@ export function isFresher(segment?: string) {
 }
 
 export function isExperienced(segment?: string) {
-  return Boolean(segment?.includes("0-2") || segment?.includes("2-5"));
+  return Boolean(segment?.includes("0-2") || segment?.includes("2-5") || segment?.includes("5+"));
 }
 
 function reasonForChangeOptions(segment?: string) {
@@ -83,6 +84,8 @@ export const targetFieldOptions = [
   "Hospitality, Travel & Aviation",
   "Agriculture, Food & Environment",
   "Design, Fashion & Lifestyle",
+  "Civil service or public service",
+  "Government office",
   "Other"
 ];
 
@@ -138,7 +141,7 @@ export const surveyQuestions: SurveyQuestion[] = [
     key: "graduation_year",
     question: "When did you graduate?",
     type: "select",
-    options: Array.from({ length: 17 }, (_, index) => String(2026 - index))
+    options: [...Array.from({ length: 17 }, (_, index) => String(2026 - index)), "Before 2010"]
   },
   {
     key: "field_of_study",
