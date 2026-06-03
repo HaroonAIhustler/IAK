@@ -30,19 +30,36 @@ export function ContactSlide({ answers, error, onChange, onSubmit }: ContactSlid
       <div className="contact-grid">
         <label className="text-field">
           <span>First name</span>
-          <input value={answers.first_name ?? ""} onChange={(event) => onChange("first_name", event.target.value)} autoComplete="given-name" />
+          <input
+            name="first_name"
+            value={answers.first_name ?? ""}
+            onChange={(event) => onChange("first_name", event.target.value)}
+            autoComplete="given-name"
+          />
         </label>
         <label className="text-field">
           <span>Last name</span>
-          <input value={answers.last_name ?? ""} onChange={(event) => onChange("last_name", event.target.value)} autoComplete="family-name" />
+          <input
+            name="last_name"
+            value={answers.last_name ?? ""}
+            onChange={(event) => onChange("last_name", event.target.value)}
+            autoComplete="family-name"
+          />
         </label>
         <label className="text-field contact-grid__wide">
           <span>Email</span>
-          <input value={answers.email ?? ""} onChange={(event) => onChange("email", event.target.value)} type="email" autoComplete="email" />
+          <input
+            name="email"
+            value={answers.email ?? ""}
+            onChange={(event) => onChange("email", event.target.value)}
+            type="email"
+            autoComplete="email"
+          />
         </label>
         <label className="text-field contact-grid__wide">
           <span>WhatsApp number</span>
           <input
+            name="phone"
             value={answers.whatsapp_number ?? "+91 "}
             onChange={(event) => handlePhoneChange(event.target.value)}
             inputMode="tel"
