@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
+  AlertTriangle,
+  ArrowRight,
+  Bot,
+  CheckCircle2,
   ClipboardCheck,
   FileSearch,
   Linkedin,
@@ -73,6 +77,60 @@ const stats = [
   { value: "95%", label: "Resume Match rate", icon: Trophy },
   { value: "70%", label: "More Responses", icon: Target },
   { value: "4.9/5", label: "Student Rating", icon: Star }
+];
+
+const aiAgents = [
+  {
+    title: "Resume Analyzer",
+    input: "Current resume",
+    output: "Finds issues",
+    icon: FileSearch,
+    status: "Scanning"
+  },
+  {
+    title: "Resume Builder",
+    input: "Resume gaps",
+    output: "Creates ATS-friendly resume",
+    icon: ClipboardCheck,
+    status: "Building"
+  },
+  {
+    title: "JD Matcher",
+    input: "Job description",
+    output: "Tailors applications",
+    icon: Target,
+    status: "Matching"
+  },
+  {
+    title: "LinkedIn Optimizer",
+    input: "Profile signals",
+    output: "Improves recruiter visibility",
+    icon: Linkedin,
+    status: "Optimizing"
+  },
+  {
+    title: "Interview Coach",
+    input: "Target role",
+    output: "Prepares you for interviews",
+    icon: MessagesSquare,
+    status: "Coaching"
+  }
+];
+
+const beforePainPoints = [
+  "Applying to hundreds of jobs",
+  "ATS rejections",
+  "Generic resumes",
+  "Weak LinkedIn profile",
+  "No interview preparation"
+];
+
+const afterOutcomes = [
+  "ATS-optimized resume",
+  "Tailored applications",
+  "Optimized LinkedIn profile",
+  "Interview-ready confidence",
+  "More interview calls"
 ];
 
 const featureCards = [
@@ -156,10 +214,6 @@ const faqs = [
       "Yes. The system helps you make your resume sharper, more role-matched, and easier for recruiters to scan even when many candidates are applying."
   }
 ];
-
-const sideFaqs = faqs.filter(
-  (faq) => !["How quickly can I start using the kit?", "Do I need technical skills to use this?"].includes(faq.question)
-);
 
 function readQueryParams() {
   if (typeof window === "undefined") return new URLSearchParams();
@@ -546,8 +600,14 @@ export default function InterviewAcceleratorKitPage() {
                 })}
               </div>
               <div className="stage3-hero-inclusions__total">
-                <span>Total feature value</span>
-                <strong>₹{totalValue}</strong>
+                <div>
+                  <span>Total value</span>
+                  <strong>₹{totalValue}</strong>
+                </div>
+                <div>
+                  <span>You pay today</span>
+                  <strong>{formattedOfferPrice}</strong>
+                </div>
               </div>
             </div>
 
@@ -581,6 +641,35 @@ export default function InterviewAcceleratorKitPage() {
           </div>
         </section>
 
+        <section className="stage3-agent-team" aria-label="Personal AI Career Team">
+          <div className="accelerator-section-title">
+            <p>Meet Your Personal AI Career Team</p>
+            <h2>5 AI Agents Working To Get You <span>70% More Interviews</span></h2>
+          </div>
+          <div className="stage3-agent-workflow">
+            {aiAgents.map((agent, index) => {
+              const Icon = agent.icon;
+              return (
+                <div className="stage3-agent-step" key={agent.title}>
+                  <article className="stage3-agent-card">
+                    <div className="stage3-agent-card__top">
+                      <span className="stage3-agent-avatar"><Bot size={22} /></span>
+                      <i>{agent.status}</i>
+                    </div>
+                    <span className="stage3-agent-icon"><Icon size={24} /></span>
+                    <h3>{agent.title}</h3>
+                    <p><small>Input</small>{agent.input}</p>
+                    <p><small>Output</small>{agent.output}</p>
+                  </article>
+                  {index < aiAgents.length - 1 ? (
+                    <span className="stage3-agent-arrow" aria-hidden="true"><ArrowRight size={22} /></span>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
         <section className="accelerator-stats" aria-label="Program stats">
           {stats.map((item) => {
             const Icon = item.icon;
@@ -594,67 +683,43 @@ export default function InterviewAcceleratorKitPage() {
           })}
         </section>
 
-        <section className="accelerator-inside" id="inside">
+        <section className="stage3-transformation" id="inside">
           <div className="accelerator-section-title">
-            <p>What&apos;s inside</p>
-            <h2>Everything You Need to Get Interview Calls & <span>Get Hired</span></h2>
+            <p>From Job Applications to Interview Calls</p>
+            <h2 className="stage3-transformation__heading">
+              <span className="stage3-transformation__heading-line">Move from ignored applications to</span>
+              <span>recruiter-ready resume</span>
+            </h2>
           </div>
-          <p className="stage3-section-copy">Built specifically for Indian job seekers.</p>
-          <div className="stage3-stack-layout">
-            <div className="stage3-stack">
-              {valueStack.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div className="stage3-stack-row" key={item.title}>
-                    <span><Icon size={22} /></span>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <small>{item.desc}</small>
-                    </div>
-                    <em>{item.value}</em>
-                  </div>
-                );
-              })}
-              <div className="stage3-stack-total">
-                <div>
-                  <span>Total value</span>
-                  <strong>₹{totalValue}</strong>
-                </div>
-                <div>
-                  <span>You pay today</span>
-                  <strong>{formattedOfferPrice}</strong>
-                  <em>Save ₹{savings}</em>
-                </div>
-              </div>
-            </div>
-
-            <aside className="stage3-side">
-              <div className="stage3-guarantee">
-                <span><ShieldCheck size={24} /></span>
-                <h3>7-Day Money Back Guarantee</h3>
-                <p>Try the Kit for 7 days. If it is not useful, email us and we will refund you.</p>
-              </div>
-              <div className="stage3-mini-faq">
-                {sideFaqs.map((faq, index) => (
-                  <details key={faq.question} open={index === 0}>
-                    <summary>{faq.question}</summary>
-                    <p>{faq.answer}</p>
-                  </details>
+          <div className="stage3-transformation__grid">
+            <article className="stage3-compare-card stage3-compare-card--before">
+              <span><AlertTriangle size={23} /></span>
+              <h3>Before</h3>
+              <ul>
+                {beforePainPoints.map((item) => (
+                  <li key={item}><AlertTriangle size={17} /> {item}</li>
                 ))}
-              </div>
-            </aside>
-            <RazorpayPaymentButton
-              label={ctaLabel}
-              className="stage3-wide-cta stage3-razorpay-cta"
-              onPaymentClick={() => handleCheckoutClick("value_stack")}
-            />
+              </ul>
+            </article>
+            <div className="stage3-transformation__arrow" aria-hidden="true">
+              <ArrowRight size={34} />
+            </div>
+            <article className="stage3-compare-card stage3-compare-card--after">
+              <span><Bot size={23} /></span>
+              <h3>After Using 5 AI Career Agents</h3>
+              <ul>
+                {afterOutcomes.map((item) => (
+                  <li key={item}><CheckCircle2 size={17} /> {item}</li>
+                ))}
+              </ul>
+            </article>
           </div>
         </section>
 
         <section className="accelerator-features" id="features">
           <div className="accelerator-section-title">
             <p className="accelerator-section-title__green">All-in-one support</p>
-            <h2>All the tools you need to<br /><span>get interview invites within 7 days</span></h2>
+            <h2>All the tools you need to<br /><span className="stage3-tools-line">get interview invites within 7 days</span></h2>
           </div>
           <div className="accelerator-feature-grid">
             {featureCards.map((feature) => {
@@ -673,7 +738,7 @@ export default function InterviewAcceleratorKitPage() {
         <section className="accelerator-stories" id="stories">
           <div className="accelerator-section-title">
             <p>Success stories</p>
-            <h2>From Preparation to Placement</h2>
+            <h2>From Preparation to <span>Placement</span></h2>
           </div>
           <div className="accelerator-story-grid accelerator-story-slider">
             {stories.map((story, index) => (
