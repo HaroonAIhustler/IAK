@@ -9,7 +9,7 @@ import { createMetaEventId, trackMetaPageView, trackMetaPurchase } from "@/lib/m
 import { buildReadableQuestionList, buildReadableSurveyAnswers, getOfferRouting } from "@/lib/scoreCalculator";
 import { readSurveySession } from "@/lib/storage";
 
-const razorpayPaymentButtonId = "pl_SsYUUaylulQoBn";
+const razorpayPaymentButtonId = "pl_StLvnKaWIS1GzX";
 
 function readPaymentParams() {
   if (typeof window === "undefined") return new URLSearchParams();

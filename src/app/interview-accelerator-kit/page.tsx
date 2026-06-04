@@ -28,7 +28,7 @@ type OfferSession = {
   utm: UtmData | null;
 };
 
-const razorpayPaymentButtonId = "pl_SsYUUaylulQoBn";
+const razorpayPaymentButtonId = "pl_StLvnKaWIS1GzX";
 
 const valueStack = [
   {
