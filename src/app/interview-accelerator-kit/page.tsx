@@ -187,7 +187,8 @@ function getHeroCopy(session: OfferSession | null) {
   return {
     firstName,
     hasSurveyData,
-    support: "Turn your applications into real interview with a proven system that gets 70% more invites."
+    supportPrefix: "Turn your applications into real interview with a ",
+    supportHighlight: "proven system that gets 70% more invites."
   };
 }
 
@@ -504,12 +505,17 @@ export default function InterviewAcceleratorKitPage() {
             {heroCopy.firstName ? <p className="stage3-hero__name">{heroCopy.firstName},</p> : null}
             {heroCopy.hasSurveyData ? (
               <h1>
-                What if 5 AI Agents <span>line up 10+ interviews</span> within 7 days?
+                What if <span>5 AI Agents help you get interview calls</span> within 7 days?
               </h1>
             ) : (
-              <h1>What if 5 AI Agents could get you interview calls in 7 days</h1>
+              <h1>
+                What if <span>5 AI Agents help you get interview calls</span> within 7 days?
+              </h1>
             )}
-            <p>{heroCopy.support}</p>
+            <p>
+              {heroCopy.supportPrefix}
+              <strong>{heroCopy.supportHighlight}</strong>
+            </p>
             <div className="stage3-without-list" aria-label="What this helps you avoid">
               <span><ShieldCheck size={17} /> Without applying to 100+ jobs daily</span>
               <span><ShieldCheck size={17} /> Without waiting for weeks to get replies</span>
