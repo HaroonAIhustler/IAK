@@ -505,11 +505,15 @@ export default function InterviewAcceleratorKitPage() {
             {heroCopy.firstName ? <p className="stage3-hero__name">{heroCopy.firstName},</p> : null}
             {heroCopy.hasSurveyData ? (
               <h1>
-                What if <span>5 AI Agents help you get interview calls</span> within 7 days?
+                <span className="stage3-hero__headline-line">What if <span>5 AI Agents help you get interview calls</span></span>
+                <br />
+                within 7 days?
               </h1>
             ) : (
               <h1>
-                What if <span>5 AI Agents help you get interview calls</span> within 7 days?
+                <span className="stage3-hero__headline-line">What if <span>5 AI Agents help you get interview calls</span></span>
+                <br />
+                within 7 days?
               </h1>
             )}
             <p>
@@ -517,15 +521,34 @@ export default function InterviewAcceleratorKitPage() {
               <strong>{heroCopy.supportHighlight}</strong>
             </p>
             <div className="stage3-without-list" aria-label="What this helps you avoid">
-              <span><ShieldCheck size={17} /> Without applying to 100+ jobs daily</span>
+              <span><ShieldCheck size={17} /> Without spend 5+ hours applying jobs</span>
               <span><ShieldCheck size={17} /> Without waiting for weeks to get replies</span>
               <span><ShieldCheck size={17} /> Without getting filtered out by ATS</span>
             </div>
           </div>
 
           <div className="stage3-hero__grid">
-            <div className="stage3-hero-image" aria-label="Interview Accelerator Kit preview">
-              <Image src="/assets/interview-accelerator-hero.png" alt="" fill sizes="(max-width: 900px) 100vw, 720px" priority />
+            <div className="stage3-hero-inclusions" aria-label="What is included">
+              <div>
+                <span className="stage3-badge stage3-badge--success">What&apos;s included</span>
+                <h2>Feature value inside the kit</h2>
+              </div>
+              <div className="stage3-hero-inclusions__list">
+                {valueStack.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div className="stage3-hero-inclusions__row" key={item.title}>
+                      <span><Icon size={20} /></span>
+                      <strong>{item.title}</strong>
+                      <em>{item.value}</em>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="stage3-hero-inclusions__total">
+                <span>Total feature value</span>
+                <strong>₹{totalValue}</strong>
+              </div>
             </div>
 
             <aside className="stage3-offer-card">
@@ -534,14 +557,15 @@ export default function InterviewAcceleratorKitPage() {
                 <small>Save ₹{savings}</small>
               </div>
               <h2>Interview Accelerator Kit</h2>
-              <p><strong>Get lifetime access</strong> to Job application system that gets 70% more responses.</p>
+              <p>You dont need to pay for expensive AI tools or Resume creators.</p>
+              <p className="stage3-offer-line">Get everything you need for</p>
               <div className="stage3-price">
                 <span>₹{totalValue}</span>
                 <strong>{formattedOfferPrice}</strong>
                 <em>-{Math.round((savings / totalValue) * 100)}%</em>
               </div>
               <small className="stage3-offer-note">
-                Costs less than a dinner date.
+                <strong>Costs less than a dinner date.</strong>
               </small>
               <RazorpayPaymentButton
                 label="Get Interview Accelerator Kit"

@@ -3670,6 +3670,16 @@ button {
   color: #60a577;
 }
 
+.stage3-hero h1 .stage3-hero__headline-line {
+  display: inline-block;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.stage3-hero h1 .stage3-hero__headline-line span {
+  color: #60a577;
+}
+
 .stage3-hero__intro .stage3-hero__name {
   margin: 0;
   color: #0b2e75;
@@ -3722,28 +3732,88 @@ button {
 
 .stage3-hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
   gap: 28px;
   align-items: start;
 }
 
-.stage3-hero-image {
-  position: relative;
-  min-height: 430px;
-  overflow: hidden;
-  border: 0;
-  border-radius: 22px;
+.stage3-hero-inclusions {
+  display: grid;
+  gap: 18px;
+  padding: 26px;
+  border-radius: 20px;
   background:
-    radial-gradient(circle at 12% 18%, rgba(250, 204, 21, 0.22), transparent 14rem),
-    linear-gradient(135deg, #f8fbff, #eaf2ff);
-  box-shadow: 0 24px 70px rgba(25, 70, 156, 0.16);
+    radial-gradient(circle at 8% 0%, rgba(96, 165, 119, 0.14), transparent 13rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(235, 246, 255, 0.86));
+  box-shadow: 0 24px 70px rgba(25, 70, 156, 0.14);
+  backdrop-filter: blur(14px) saturate(145%);
 }
 
-.stage3-hero-image img {
-  object-fit: cover;
-  object-position: center;
-  padding: 0;
-  transform: none;
+.stage3-hero-inclusions h2 {
+  margin: 12px 0 0;
+  color: #0b2e75;
+  font-size: clamp(1.35rem, 2vw, 1.72rem);
+  line-height: 1.16;
+}
+
+.stage3-hero-inclusions__list {
+  display: grid;
+  gap: 10px;
+}
+
+.stage3-hero-inclusions__row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(25, 70, 156, 0.08);
+}
+
+.stage3-hero-inclusions__row > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: #eaf4ff;
+  color: #0b63e5;
+}
+
+.stage3-hero-inclusions__row strong {
+  color: #0b2e75;
+  font-size: 0.96rem;
+  line-height: 1.22;
+}
+
+.stage3-hero-inclusions__row em {
+  color: #0b2e75;
+  font-size: 0.98rem;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.stage3-hero-inclusions__total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #0b2e75;
+  color: #ffffff;
+}
+
+.stage3-hero-inclusions__total span {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.stage3-hero-inclusions__total strong {
+  color: #fde047;
+  font-size: 1.45rem;
 }
 
 .stage3-video {
@@ -3882,7 +3952,7 @@ button {
 
 .stage3-offer-card h2 {
   margin: 0;
-  background: linear-gradient(90deg, #ff6b00, #ffb000, #ff4d00, #ffcf33);
+  background: linear-gradient(90deg, #0b2e75, #0b63e5, #038cd2, #19469c);
   background-size: 260% 100%;
   background-clip: text;
   color: transparent;
@@ -3908,6 +3978,10 @@ button {
 
 .stage3-offer-card > small {
   font-weight: 700;
+}
+
+.stage3-offer-line {
+  font-weight: 900;
 }
 
 .stage3-offer-note {
@@ -5617,6 +5691,10 @@ button {
   .stage3-hero h1 {
     font-size: 2.05rem;
     line-height: 1.12;
+    white-space: normal;
+  }
+
+  .stage3-hero h1 .stage3-hero__headline-line {
     white-space: normal;
   }
 
