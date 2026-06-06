@@ -43,7 +43,7 @@ const valueStack = [
     items: ["Resume mistake checklist", "ATS risk indicators", "Before/after resume examples"]
   },
   {
-    title: "Tailored Resume Building",
+    title: "Tailored Resume Builder",
     value: "₹1,499",
     icon: ClipboardCheck,
     desc: "ATS-friendly templates and editor",
@@ -140,7 +140,7 @@ const featureCards = [
     icon: FileSearch
   },
   {
-    title: "Tailored Resume Building",
+    title: "Tailored Resume Builder",
     copy: "Build a sharper resume for the exact role you want",
     icon: ClipboardCheck
   },
@@ -765,20 +765,28 @@ export default function InterviewAcceleratorKitPage() {
         </section>
 
         <section className="accelerator-pricing" id="pricing">
-          <div>
+          <span className="stage3-pricing-badge">Limited period offer</span>
+          <div className="stage3-pricing-card stage3-pricing-card--value">
             <p>Total value</p>
             <strong>₹{totalValue}</strong>
           </div>
-          <div>
-            <p>Today</p>
+          <div className="stage3-pricing-card stage3-pricing-card--today">
+            <p>You pay today</p>
             <strong>{formattedOfferPrice}</strong>
+            <small>Save ₹{savings}</small>
           </div>
-          <p>{getOfferHook(routing.offer_segment, offerPrice)}</p>
-          <RazorpayPaymentButton
-            label={ctaLabel}
-            className="stage3-razorpay-cta"
-            onPaymentClick={() => handleCheckoutClick("pricing")}
-          />
+          <div className="stage3-pricing-copy">
+            <h2>Start building a recruiter-ready resume today</h2>
+            <p>{getOfferHook(routing.offer_segment, offerPrice)}</p>
+            <span>Secured by Razorpay</span>
+          </div>
+          <div className="stage3-pricing-action">
+            <RazorpayPaymentButton
+              label={ctaLabel}
+              className="stage3-razorpay-cta"
+              onPaymentClick={() => handleCheckoutClick("pricing")}
+            />
+          </div>
         </section>
 
         <section className="offer-faq accelerator-faq" id="faq">
