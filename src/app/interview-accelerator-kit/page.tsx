@@ -303,13 +303,33 @@ function getPaymentContact(session: OfferSession | null) {
   };
 }
 
+function getPaymentStarted(paymentStatus: string) {
+  return ["checkout_opened", "payment_button_clicked", "payment_success", "payment_failed"].includes(paymentStatus)
+    ? "yes"
+    : "";
+}
+
+function getContactPaymentStatus(paymentStatus: string) {
+  if (paymentStatus === "checkout_opened" || paymentStatus === "payment_button_clicked") return "started";
+  if (paymentStatus === "payment_success") return "successful";
+  if (paymentStatus === "payment_failed") return "failed";
+  return paymentStatus;
+}
+
 function buildPaymentWebhookPayload(
   session: OfferSession | null,
   routing: OfferRouting,
   paymentStatus: string,
   extra: Record<string, unknown> = {}
 ) {
-  const contact = getPaymentContact(session);
+  const contact = {
+    ...getPaymentContact(session),
+    payment_id: paymentStatus === "payment_success" ? webhookString(extra.razorpay_payment_id ?? extra.payment_id) : "",
+    amount_paid: paymentStatus === "payment_success" ? webhookString(routing.offer_price) : "",
+    payment_started: getPaymentStarted(paymentStatus),
+    payment_status: getContactPaymentStatus(paymentStatus)
+  };
+  const paymentSucceeded = paymentStatus === "payment_success";
 
   return {
     source: "AI Growth Studio Interview Accelerator Payment",
@@ -337,6 +357,7 @@ function buildPaymentWebhookPayload(
       payment_button_id: razorpayPaymentButtonId,
       product: routing.razorpay_product,
       amount: routing.offer_price,
+      amount_paid: paymentSucceeded ? routing.offer_price : "",
       currency: "INR",
       submitted_at: new Date().toISOString(),
       ...extra
@@ -492,10 +513,13 @@ export default function InterviewAcceleratorKitPage() {
     if (!paymentId && !paymentLinkStatus && !failureReason) return;
 
     trackedReturnRef.current = true;
+    const normalizedPaymentStatus = paymentLinkStatus?.toLowerCase();
     const normalizedStatus =
-      paymentLinkStatus?.toLowerCase() === "paid" || paymentId
-        ? "payment_success"
-        : "payment_failed";
+      failureReason || ["failed", "cancelled", "canceled"].includes(normalizedPaymentStatus ?? "")
+        ? "payment_failed"
+        : ["paid", "captured", "success", "successful"].includes(normalizedPaymentStatus ?? "") || paymentId
+          ? "payment_success"
+          : "payment_failed";
 
     if (normalizedStatus === "payment_success") {
       window.sessionStorage.setItem(`aigs_payment_success_tracked:${paymentId ?? "unknown"}`, "1");

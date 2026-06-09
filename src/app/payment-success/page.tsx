@@ -52,6 +52,10 @@ export default function PaymentSuccessPage() {
         email: answers.email,
         phone: answers.whatsapp_number,
         whatsapp_number: answers.whatsapp_number,
+        payment_id: webhookString(paymentId),
+        amount_paid: webhookString(routing.offer_price),
+        payment_started: "yes",
+        payment_status: "successful",
         resume_score: webhookString(stored.scoreResult?.resume_visibility_score),
         which_city: webhookString(city),
         why_do_you_want_to_change: webhookString(answers.reason_for_change),
@@ -85,6 +89,7 @@ export default function PaymentSuccessPage() {
         callback_params: Object.fromEntries(params.entries()),
         product: routing.razorpay_product,
         amount: routing.offer_price,
+        amount_paid: routing.offer_price,
         currency: "INR",
         submitted_at: new Date().toISOString()
       }
