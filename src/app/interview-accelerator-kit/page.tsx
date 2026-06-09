@@ -356,7 +356,7 @@ function buildPaymentWebhookPayload(
       provider: "razorpay",
       payment_button_id: razorpayPaymentButtonId,
       product: routing.razorpay_product,
-      amount: routing.offer_price,
+      amount: paymentSucceeded ? routing.offer_price : "",
       amount_paid: paymentSucceeded ? routing.offer_price : "",
       currency: "INR",
       submitted_at: new Date().toISOString(),
